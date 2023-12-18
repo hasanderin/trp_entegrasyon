@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2023 Kita Yazilim
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="sale_order_line_import_form_view">
+        <field name="name">sale.order.line.import.form (in sale_import_file)</field>
+        <field name="model">sale.order.line.import</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order Line Import">
+                <header>
+                    <field
+                        name="state"
+                        widget="statusbar"
+                    />
+                </header>
+                <group attrs="{'invisible':[('state','!=','init')]}">
+                    <field name="order_id"/>
+                    <field name="shift"/>
+                    <field name="file" filename="f_name"/>
+                    <span colspan="2" class="text-danger" attrs="{'invisible':[('file_dup','=',False)]}">
+                        Bu dosya daha önce yüklenmiş!
+                    </span>
+                    <field name="file_dup" invisible="1"/>
+                    <field name="f_name" invisible="1"/>                   
+                </group>                             
+                <group attrs="{'invisible':[('state','!=','parse')]}">
+                    <field name="line_ids" string="">
+                        <tree string="" editable="top" no_open="True">
+                            <field name="date"/>
+                            <field name="filo"/>
+                            <field name="kodu"/>
+                            <field name="plaka"/>
+                            <field name="yakit"/>
+                            <field name="litre" sum="Yakit Toplam"/>
+                            <field name="fiyat" />
+                            <field name="toplam" sum="Tutar Toplam"/>
+                            <field name="tb"/>
+                            <field name="ncpu"/>
+                            <field name="fis"/>
+                        </tree>
+                    </field>
+                </group>
+                <group attrs="{'invisible':[('state','!=','done')]}">
+                    <h1 colspan="2">Sipariş başarıyla oluşturuldu</h1>
+                </group>
+                <footer>
+                    <span states="init">
+                        <button
+                            name="init_exit"
+                            string="İleri"
+                            class="oe_highlight"
+                            type="object"
+                        />
+                    </span>
+                    <span states="parse">
+                        <button name="action_init" string="Geri" type="object" />
+                        <button
+                            name="parse_exit"
+                            string="İleri"
+                            type="object"
+                            class="oe_highlight"
+                        />                 
+                    </span>
+                    <span states="init,parse"> or </span>
+                    <button special="cancel" string="Kapat" class="oe_link" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="sale_order_line_import_act_window">
+        <field name="name">Sipariş Satırı İçeri Aktarım</field> 
+        <field name="res_model">sale.order.line.import</field>
+        <field name="view_mode">form</field>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
